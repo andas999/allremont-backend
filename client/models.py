@@ -7,11 +7,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 def upload_works(instance, filename):
-    return f'works/{filename}'.format(filename=filename)
+    return f'/media/works/{filename}'.format(filename=filename)
 
 
 def upload_schemas(instance, filename):
-    return f'schemas/{filename}'.format(filename=filename)
+    return f'/media/schemas/{filename}'.format(filename=filename)
 
 
 class UserManager(BaseUserManager):
