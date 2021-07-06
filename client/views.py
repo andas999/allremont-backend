@@ -111,7 +111,7 @@ class LoginAPIView(APIView):
 class ClientProfileView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = JSONWebTokenAuthentication
-
+    serializer_class = UserSerializer
     def get(self, request):
         try:
             user_profile = Client.objects.get(user=request.user)
@@ -140,7 +140,7 @@ class ClientProfileView(RetrieveAPIView):
 class WorkerProfileView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_class = JSONWebTokenAuthentication
-    serializer_class = WorkerSerializer
+    serializer_class = UserSerializer
 
     def get(self, request):
         try:
