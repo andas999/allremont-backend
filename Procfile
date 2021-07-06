@@ -1,5 +1,5 @@
 release: python manage.py makemigrations --no-input
 release: python manage.py migrate --no-input
 
-web: gunicorn allremont.wsgi --log-file -
+web: gunicorn mainapp.wsgi --log-file -
 
