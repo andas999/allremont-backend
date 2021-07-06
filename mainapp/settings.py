@@ -13,11 +13,12 @@ from datetime import timedelta
 from pathlib import Path
 import os
 
-import DATABASES as DATABASES
 import dj_database_url
 import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.conf.global_settings import DATABASES
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
