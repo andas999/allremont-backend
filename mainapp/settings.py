@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 import os
+
+import DATABASES as DATABASES
+import dj_database_url
 import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +29,7 @@ SECRET_KEY = '4(yxjyfgsy$2zun)ylhk@2vya3pl7a(#p**n+&4+trh8&y3&qh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'allremontastana.herokuapp.com']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'allremontastana.herokuapp.com']
 
 # Application definition
 
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'phone_verify',
     'django_filters',
     'drf_yasg',
+    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'mainapp.urls'
@@ -77,6 +82,8 @@ WSGI_APPLICATION = 'mainapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 DATABASES = {
     'default': {
 
@@ -90,7 +97,7 @@ DATABASES = {
 
         'HOST': 'localhost',
 
-        'PORT': '5433',
+        'PORT': '5432',
     }
 }
 
@@ -140,6 +147,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'allremont/static')
+                    ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTH_USER_MODEL = 'client.User'
 
