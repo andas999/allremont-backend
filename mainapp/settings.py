@@ -62,10 +62,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 CORS_ALLOWED_ORIGINS = [
-    '0.0.0.0',
-    'localhost',
-    '127.0.0.1',
-    'allremontastana.herokuapp.com'
+    "http://0.0.0.0",
+    "http://localhost",
+    "http://127.0.0.1",
+    "https://allremontastana.herokuapp.com"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
