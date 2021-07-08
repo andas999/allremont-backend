@@ -27,7 +27,7 @@ SECRET_KEY = '4(yxjyfgsy$2zun)ylhk@2vya3pl7a(#p**n+&4+trh8&y3&qh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -61,14 +61,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
-CORS_ALLOWED_ORIGINS = [
-    "http://0.0.0.0",
-    "http://localhost:3000",
-    "http://127.0.0.1",
-    "https://allremontastana.herokuapp.com"
-]
 
-CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'mainapp.urls'
 
