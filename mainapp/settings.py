@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 from datetime import timedelta
-from pathlib import Path
 import os
 
 import dj_database_url
@@ -29,7 +28,7 @@ SECRET_KEY = '4(yxjyfgsy$2zun)ylhk@2vya3pl7a(#p**n+&4+trh8&y3&qh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'allremontastana.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
