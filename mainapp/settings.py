@@ -29,8 +29,7 @@ DEBUG = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'allremontastana.herokuapp.com', 'http://localhost:3000',
-                 'localhost:3000']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
