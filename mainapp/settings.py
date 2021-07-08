@@ -18,7 +18,6 @@ import django_heroku
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -28,7 +27,10 @@ SECRET_KEY = '4(yxjyfgsy$2zun)ylhk@2vya3pl7a(#p**n+&4+trh8&y3&qh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'allremontastana.herokuapp.com','http://localhost:3000', 'localhost:3000']
+CORS_ALLOW_ALL_ORIGINS = True
+
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'allremontastana.herokuapp.com', 'http://localhost:3000',
+                 'localhost:3000']
 
 # Application definition
 
