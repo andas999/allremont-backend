@@ -7,11 +7,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 def upload_works(instance, filename):
-    return f'/media/works/{filename}'.format(filename=filename)
+    return filename
 
 
 def upload_schemas(instance, filename):
-    return f'/media/schemas/{filename}'.format(filename=filename)
+    return filename
 
 
 class UserManager(BaseUserManager):
@@ -157,7 +157,7 @@ class WorkerPortfolio(models.Model):
 class WorkerPortfolioPhoto(models.Model):
     image_id = models.AutoField(primary_key=True)
     image_name = models.CharField(max_length=20, null=False, default='default')
-    image_url = models.ImageField(_("Image"), upload_to=upload_works, default='works/default.jpg')
+    image_url = models.ImageField(_("Image"), upload_to=upload_works, default='default.jpg')
     workerPortfolio = models.ForeignKey(WorkerPortfolio, on_delete=models.CASCADE, null=True)
 
 
@@ -200,7 +200,7 @@ class RequestedService(models.Model):
 
 class RequestPhoto(models.Model):
     image_name = models.CharField(max_length=20, null=False, default='default')
-    image_url = models.ImageField(_("Image"), upload_to=upload_schemas, default='schemas/default.jpg')
+    image_url = models.ImageField(_("Image"), upload_to=upload_schemas, default='default2.jpg')
     request = models.ForeignKey(RequestedService, on_delete=models.CASCADE, null=True)
 
 
