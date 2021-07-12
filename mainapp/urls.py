@@ -28,7 +28,7 @@ default_router.register('phone', VerificationViewSet, basename='phone')
 urlpatterns = default_router.urls
 
 urlpatterns += [
-    path('allremont/', include('client.urls')),
+    path('api/', include('client.urls')),
 ]
 urlpatterns += [
     path('admin/', admin.site.urls),
