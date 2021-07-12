@@ -27,8 +27,6 @@ SECRET_KEY = '4(yxjyfgsy$2zun)ylhk@2vya3pl7a(#p**n+&4+trh8&y3&qh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -60,7 +58,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
 
 ROOT_URLCONF = 'mainapp.urls'
 
@@ -207,7 +204,8 @@ MEDIA_URL = '/media/'
 
 django_heroku.settings(locals())
 
-
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+    "https://allremont-frontend.herokuapp.com"
 ]
