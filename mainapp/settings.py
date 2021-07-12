@@ -209,3 +209,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://allremont-frontend.herokuapp.com"
 ]
+
+APPEND_SLASH = False
