@@ -1,13 +1,12 @@
 from rest_framework import status, generics, filters, viewsets
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-
-from .models import Client, Worker, User, RequestedService, WorkerPortfolio, WorkerPortfolioPhoto, RequestPhoto, Response as Resp
-from .serializers import LoginSerializer, ClientRegistrationSerializer, \
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .models import Client, Worker, User, RequestedService, WorkerPortfolio, WorkerPortfolioPhoto, RequestPhoto, \
+    Response as Resp
+from .serializers import ClientRegistrationSerializer, \
     WorkerRegistrationSerializer, UserSerializer, WorkerSerializer, PortfolioSerializer, ServiceSerializer, \
     WorkerPhotoSerializer, PhotoSerializer, ResponseSerializer, ResponseRegSerializer
 
@@ -17,17 +16,15 @@ class ClientRegistrationAPIView(APIView):
     serializer_class = ClientRegistrationSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.create(serializer.data)
-        status_code = status.HTTP_201_CREATED
-        response = {
-            'success': 'True',
-            'status code': status_code,
-            'message': 'User registered  successfully',
-        }
-
-        return Response(response, status=status_code)
+        reg_serializer = ClientRegistrationSerializer(data=request.data)
+        if reg_serializer.is_valid():
+            new_user = reg_serializer.save()
+            if new_user:
+                return Response({
+                    "token": new_user.token
+                },
+                    status=status.HTTP_201_CREATED)
+            return Response(reg_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class WorkerRegistrationAPIView(APIView):
@@ -35,22 +32,21 @@ class WorkerRegistrationAPIView(APIView):
     serializer_class = WorkerRegistrationSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.create(serializer.data)
-        status_code = status.HTTP_201_CREATED
-        response = {
-            'success': 'True',
-            'status code': status_code,
-            'message': 'User registered  successfully',
-        }
-
-        return Response(response, status=status_code)
+        reg_serializer = ClientRegistrationSerializer(data=request.data)
+        if reg_serializer.is_valid():
+            new_user = reg_serializer.save()
+            if new_user:
+                return Response({
+                    "token": new_user.token
+                },
+                    status=status.HTTP_201_CREATED)
+            return Response(reg_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResponseRegAPIView(APIView):
     permission_classes = [AllowAny]
     serializer_class = ResponseRegSerializer
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -70,7 +66,8 @@ class ResponseConfirmAPI(APIView):
 
     def post(self, request):
         # worker = Worker.objects.get(id=request.worker_id)
-        service = RequestedService.objects.filter(id=request.data['request_id']).update(worker=request.data['worker_id'], status=True)
+        service = RequestedService.objects.filter(id=request.data['request_id']).update(
+            worker=request.data['worker_id'], status=True)
         status_code = status.HTTP_201_CREATED
         response = {
             'success': 'True',
@@ -80,38 +77,11 @@ class ResponseConfirmAPI(APIView):
         return Response(response)
 
 
-
-class LoginAPIView(APIView):
-    """
-    Logs in an existing user.
-    """
-    permission_classes = [AllowAny]
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-        """
-        Checks is user exists.
-        Email and password are required.
-        Returns a JSON web token.
-        """
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        response = {
-            'success': 'True',
-            'status code': status.HTTP_200_OK,
-            'message': 'User logged in  successfully',
-            'token': serializer.data['token'],
-        }
-        status_code = status.HTTP_200_OK
-
-        return Response(response, status=status_code)
-
-
 class ClientProfileView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = JSONWebTokenAuthentication
+    authentication_class = JWTAuthentication
     serializer_class = UserSerializer
+
     def get(self, request):
         try:
             user_profile = Client.objects.get(user=request.user)
@@ -139,7 +109,7 @@ class ClientProfileView(RetrieveAPIView):
 
 class WorkerProfileView(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_class = JSONWebTokenAuthentication
+    authentication_class = JWTAuthentication
     serializer_class = UserSerializer
 
     def get(self, request):
@@ -200,6 +170,7 @@ class RequestPhotoSerializerAPI(generics.ListCreateAPIView):
             return RequestPhoto.objects.filter(request=id)
         else:
             return RequestPhoto.objects.all()
+
 
 class RequestPhotoSerializerDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowAny]
