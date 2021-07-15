@@ -17,18 +17,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from phone_verify.api import VerificationViewSet
 from .yasg import urlpatterns as doc_urls
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
-
-default_router = DefaultRouter(trailing_slash=False)
-default_router.register('phone', VerificationViewSet, basename='phone')
-
-urlpatterns = default_router.urls
-
-urlpatterns += [
+urlpatterns = [
     path('api/', include('client.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
 ]
 urlpatterns += [
     path('admin/', admin.site.urls),

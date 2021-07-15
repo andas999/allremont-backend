@@ -1,13 +1,7 @@
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
 from .models import User, Client, Worker, RequestedService, RequestPhoto, Response, WorkerPrice
-from rest_framework_jwt.settings import api_settings
 
 from .models import Categories, WorkerPortfolio, WorkerPortfolioPhoto
-
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 
 class ClientRegistrationSerializer(serializers.ModelSerializer):
@@ -36,52 +30,11 @@ class WorkerRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField(write_only=True)
-    password = serializers.CharField(max_length=128, write_only=True)
-    username = serializers.CharField(max_length=255, read_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
-
-    def validate(self, data):
-        email = data.get('email', None)
-        password = data.get('password', None)
-        user = authenticate(username=email, password=password)
-
-        if user is None:
-            raise serializers.ValidationError(
-                'A user with this email and password was not found.'
-            )
-        try:
-            payload = JWT_PAYLOAD_HANDLER(user)
-            jwt_token = JWT_ENCODE_HANDLER(payload)
-            update_last_login(None, user)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                'User with given email and password does not exists'
-            )
-        if email is None:
-            raise serializers.ValidationError(
-                'An email address is required to log in.'
-            )
-        if password is None:
-            raise serializers.ValidationError(
-                'A password is required to log in.'
-            )
-        if not user.is_active:
-            raise serializers.ValidationError(
-                'This user has been deactivated.'
-            )
-        return {
-            'email': user.email,
-            'token': jwt_token
-        }
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'password', 'last_login', 'is_superuser', 'username', 'first_name', 'last_name', 'is_staff',
-                  'is_active', 'date_joined', 'is_client', 'is_worker', 'email', 'SMSVerification']
+                  'is_active', 'date_joined', 'is_client', 'is_worker', 'email',]
 
 
 class UserRespSerializer(serializers.ModelSerializer):
@@ -142,6 +95,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 class ResponseSerializer(serializers.ModelSerializer):
     worker = serializers.SerializerMethodField()
+
     class Meta:
         model = Response
         fields = '__all__'

@@ -1,9 +1,11 @@
+import jwt
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-from phone_verify.models import SMSVerification
 from django.utils.translation import gettext_lazy as _
+from datetime import datetime, timedelta
+from django.conf import settings
 
 
 def upload_works(instance, filename):
@@ -92,7 +94,6 @@ class User(AbstractUser):
     is_client = models.BooleanField(default=False)
     is_worker = models.BooleanField(default=False)
     email = models.EmailField(unique=True, null=False)
-    SMSVerification = models.OneToOneField(SMSVerification, on_delete=models.CASCADE, null=True)
 
     USERNAME_FIELD = 'email'
 
@@ -105,6 +106,47 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ['id']
+
+    @property
+    def token(self):
+        """
+        Allows us to get a user's token by calling `user.token` instead of
+        `user.generate_jwt_token().
+
+        The `@property` decorator above makes this possible. `token` is called
+        a "dynamic property".
+        """
+        return self._generate_jwt_token()
+
+    def get_full_name(self):
+        """
+        This method is required by Django for things like handling emails.
+        Typically this would be the user's first and last name. Since we do
+        not store the user's real name, we return their username instead.
+        """
+        return self.username
+
+    def get_short_name(self):
+        """
+        This method is required by Django for things like handling emails.
+        Typically, this would be the user's first name. Since we do not store
+        the user's real name, we return their username instead.
+        """
+        return self.username
+
+    def _generate_jwt_token(self):
+        """
+        Generates a JSON Web Token that stores this user's ID and has an expiry
+        date set to 60 days into the future.
+        """
+        dt = datetime.now() + timedelta(days=60)
+
+        token = jwt.encode({
+            'id': self.pk,
+            'exp': int(dt.strftime('%s'))
+        }, settings.SECRET_KEY, algorithm='HS256')
+
+        return token.decode('utf-8')
 
 
 class Client(models.Model):
@@ -215,4 +257,3 @@ class Response(models.Model):
     request = models.ForeignKey('RequestedService', on_delete=models.CASCADE)
     worker = models.ForeignKey('Worker', on_delete=models.CASCADE)
     response_detail = models.CharField(verbose_name='Details', max_length=300)
-
