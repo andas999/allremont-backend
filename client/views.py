@@ -32,7 +32,7 @@ class WorkerRegistrationAPIView(APIView):
     serializer_class = WorkerRegistrationSerializer
 
     def post(self, request):
-        reg_serializer = ClientRegistrationSerializer(data=request.data)
+        reg_serializer = WorkerRegistrationSerializer(data=request.data)
         if reg_serializer.is_valid():
             new_user = reg_serializer.save()
             if new_user:
