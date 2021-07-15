@@ -3,12 +3,14 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Client, Worker, User, RequestedService, WorkerPortfolio, WorkerPortfolioPhoto, RequestPhoto, \
-    Response as Resp
-from .serializers import ClientRegistrationSerializer, \
+    Response as Resp, WorkerPrice
+from .serializers import LoginSerializer, ClientRegistrationSerializer, \
     WorkerRegistrationSerializer, UserSerializer, WorkerSerializer, PortfolioSerializer, ServiceSerializer, \
-    WorkerPhotoSerializer, PhotoSerializer, ResponseSerializer, ResponseRegSerializer
+    WorkerPhotoSerializer, PhotoSerializer, ResponseSerializer, ResponseRegSerializer, WorkerPriceSerializer, \
+    WorkerPriceCreationSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
+    
 
 
 class ClientRegistrationAPIView(APIView):
@@ -201,7 +203,18 @@ class WorkerListAPI(generics.ListCreateAPIView):
     queryset = Worker.objects.all()
     serializer_class = WorkerSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['$categories__title']
+    search_fields = ['$worker_price__category__title']
+
+
+class WorkerCatListAPI(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
+    queryset = WorkerPrice.objects.all()
+    serializer_class = WorkerPriceCreationSerializer
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = WorkerPriceSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class WorkerDetailAPI(generics.RetrieveUpdateDestroyAPIView):

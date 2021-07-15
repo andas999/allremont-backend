@@ -165,9 +165,15 @@ class Client(models.Model):
         return self.user.is_superuser
 
 
+class WorkerPrice(models.Model):
+    worker = models.ForeignKey('Worker', on_delete=models.CASCADE, related_name='worker_price')
+    category = models.ForeignKey('Categories', on_delete=models.CASCADE)
+    price = models.IntegerField(verbose_name='Price', null=False, default=0)
+
+
 class Worker(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
-    categories = models.ManyToManyField('Categories', null=True)
+    # categories = models.ManyToManyField('Categories', null=True)
 
     objects = WorkerManager()
 
@@ -180,8 +186,8 @@ class Worker(models.Model):
     def has_perm(self, perm, obj=None):
         return self.user.is_superuser
 
-    def get_categories(self):
-        return Categories.objects.filter(worker=self)
+    # def get_categories(self):
+    #     return Categories.objects.filter(worker=self)
 
     def get_worker_portfolio(self):
         return WorkerPortfolio.objects.filter(worker=self)
