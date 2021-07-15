@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
-from .models import User, Client, Worker, RequestedService, RequestPhoto, Response
+from .models import User, Client, Worker, RequestedService, RequestPhoto, Response, WorkerPrice
 from rest_framework_jwt.settings import api_settings
 
 from .models import Categories, WorkerPortfolio, WorkerPortfolioPhoto
@@ -97,13 +97,16 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class WorkerSerializer(serializers.ModelSerializer):
-    categories = CategorySerializer(source='get_categories', many=True)
+    worker_price = serializers.SerializerMethodField()
     user = UserSerializer()
 
     class Meta:
         model = Worker
         fields = '__all__'
 
+    def get_worker_price(self, obj):
+        ser = WorkerPriceSerializer
+        return ser(obj.worker_price, many=True).data
 
 class WorkerRespSerializer(serializers.ModelSerializer):
     user = UserRespSerializer()
@@ -151,4 +154,19 @@ class ResponseSerializer(serializers.ModelSerializer):
 class ResponseRegSerializer(serializers.ModelSerializer):
     class Meta:
         model = Response
+        fields = '__all__'
+
+
+class WorkerPriceSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+
+    class Meta:
+        model = WorkerPrice
+        fields = '__all__'
+
+
+class WorkerPriceCreationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WorkerPrice
         fields = '__all__'

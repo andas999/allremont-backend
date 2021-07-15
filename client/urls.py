@@ -12,6 +12,7 @@ urlpatterns = [
     path('users/clients', ClientListAPI.as_view()),
     path('users/clients/<int:pk>/', ClientDetailAPI.as_view()),
     path('users/workers', WorkerListAPI.as_view()), #TODO: при создании рабочего также добавлять к нему категории
+    path('users/workers/categories', WorkerCatListAPI.as_view()),
     path('users/workers/<int:pk>/', WorkerDetailAPI.as_view()),
     path('requests/', RequestListAPI.as_view()),
     path('requests/<int:pk>/', RequestListDetailAPI.as_view()),
