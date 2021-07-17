@@ -234,7 +234,7 @@ class RequestedService(models.Model):
     id = models.AutoField(primary_key=True)
     client = models.ForeignKey('Client', on_delete=models.CASCADE, default='')
     sub_category = models.ForeignKey('SubCategories', on_delete=models.CASCADE, default='')
-    workload = models.CharField(verbose_name='Workload', null=False, max_length=255, default='')
+    workload = models.IntegerField(verbose_name='Workload', null=False, default=0)
     timing = models.IntegerField(verbose_name='Number of days', null=False, default=0)
     address = models.CharField(verbose_name='Address', null=False, max_length=255, default='')
     budget = models.IntegerField(verbose_name='Budget', null=False, default=0)
