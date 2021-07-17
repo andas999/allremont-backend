@@ -15,6 +15,7 @@ urlpatterns = [
     path('users/workers/<int:pk>/', WorkerDetailAPI.as_view()),
     path('requests/', RequestListAPI.as_view()),
     path('requests/<int:pk>/', RequestListDetailAPI.as_view()),
+    path('requests/avgcost', RequestAverageCostAPI.as_view()),
     path('requests/photo/', RequestPhotoSerializerAPI.as_view()),
     path('requests/photo/<int:pk>', RequestPhotoSerializerDetailAPI.as_view()),
     path('responses/', ResponseListAPI.as_view()),

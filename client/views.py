@@ -4,13 +4,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Client, Worker, User, RequestedService, WorkerPortfolio, WorkerPortfolioPhoto, RequestPhoto, \
-    Response as Resp, WorkerPrice
+    Response as Resp, WorkerPrice, Categories, SubCategories
 from .serializers import ClientRegistrationSerializer, \
     WorkerRegistrationSerializer, UserSerializer, WorkerSerializer, PortfolioSerializer, ServiceSerializer, \
     WorkerPhotoSerializer, PhotoSerializer, ResponseSerializer, ResponseRegSerializer, WorkerPriceSerializer, \
     WorkerPriceCreationSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
-    
+
 
 
 class ClientRegistrationAPIView(APIView):
@@ -61,6 +61,30 @@ class ResponseRegAPIView(APIView):
         }
 
         return Response(response)
+
+
+class RequestAverageCostAPI(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        workload = request.data['workload']
+        sub_category = SubCategories.objects.get(pk=request.data['sub_category'])
+        category = sub_category.category
+        worker_price = WorkerPrice.objects.filter(category=category)
+        count = 0
+        total = 0
+        for obj in worker_price:
+            count = count + 1
+            total = total + obj.price
+
+        avg = total/count
+        new_workload = workload*avg
+        response = {
+            'average_price': avg,
+            'avg_for_workload': new_workload
+        }
+        return Response(response)
+
 
 
 class ResponseConfirmAPI(APIView):
