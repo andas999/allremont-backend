@@ -257,3 +257,13 @@ class Response(models.Model):
     request = models.ForeignKey('RequestedService', on_delete=models.CASCADE)
     worker = models.ForeignKey('Worker', on_delete=models.CASCADE)
     response_detail = models.CharField(verbose_name='Details', max_length=300)
+
+
+class Feedback(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, verbose_name='client')
+    comment = models.TextField(null=True, verbose_name='comment')
+    worker = models.ForeignKey(Worker, on_delete=models.CASCADE, verbose_name='worker')
+    rate = models.IntegerField(verbose_name='rate')
+
+    def __str__(self):
+        return self.comment
