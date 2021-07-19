@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Client, Worker, RequestedService, RequestPhoto, Response, WorkerPrice
+from .models import User, Client, Worker, RequestedService, RequestPhoto, Response, WorkerPrice, Feedback
 
 from .models import Categories, WorkerPortfolio, WorkerPortfolioPhoto
 
@@ -51,11 +51,27 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class WorkerSerializer(serializers.ModelSerializer):
     worker_price = serializers.SerializerMethodField()
+    avg_rating = serializers.SerializerMethodField()
     user = UserSerializer()
+    worker_feedback = serializers.SerializerMethodField()
 
     class Meta:
         model = Worker
         fields = '__all__'
+
+    def get_avg_rating(self, obj):
+        feedback = self.get_worker_feedback(obj)
+        count = 0
+        sum = 0
+        for feed in feedback:
+            count = count + 1
+            sum = sum + feed['rate']
+        avg = sum/count
+        return avg
+
+    def get_worker_feedback(self, obj):
+        ser = GetFeedbackSerializer
+        return ser(Feedback.objects.filter(worker=obj), many=True).data
 
     def get_worker_price(self, obj):
         ser = WorkerPriceSerializer
@@ -123,4 +139,33 @@ class WorkerPriceCreationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WorkerPrice
+        fields = '__all__'
+
+
+class UserMainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+
+
+class ClientSerializer(serializers.ModelSerializer):
+    user = UserMainSerializer()
+
+    class Meta:
+        model = Client
+        fields = '__all__'
+
+
+class FeedbackSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Feedback
+        fields = '__all__'
+
+
+class GetFeedbackSerializer(serializers.ModelSerializer):
+    client = ClientSerializer()
+
+    class Meta:
+        model = Feedback
         fields = '__all__'

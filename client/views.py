@@ -4,11 +4,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Client, Worker, User, RequestedService, WorkerPortfolio, WorkerPortfolioPhoto, RequestPhoto, \
-    Response as Resp, WorkerPrice, Categories, SubCategories
+    Response as Resp, WorkerPrice, Categories, SubCategories, Feedback
 from .serializers import ClientRegistrationSerializer, \
     WorkerRegistrationSerializer, UserSerializer, WorkerSerializer, PortfolioSerializer, ServiceSerializer, \
     WorkerPhotoSerializer, PhotoSerializer, ResponseSerializer, ResponseRegSerializer, WorkerPriceSerializer, \
-    WorkerPriceCreationSerializer
+    WorkerPriceCreationSerializer, FeedbackSerializer, GetFeedbackSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
@@ -308,3 +308,13 @@ class ResponseListDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowAny]
     queryset = Resp.objects.all()
     serializer_class = ResponseSerializer
+
+
+class WorkerFeedbackAPI(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackSerializer
+
+    def list(self, request):
+        serializer = GetFeedbackSerializer(self.get_queryset(), many=True)
+        return Response(serializer.data)
