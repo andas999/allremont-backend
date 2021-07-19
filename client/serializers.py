@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from rest_framework import serializers
 from .models import User, Client, Worker, RequestedService, RequestPhoto, Response, WorkerPrice, Feedback
 
@@ -51,7 +52,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class WorkerSerializer(serializers.ModelSerializer):
     worker_price = serializers.SerializerMethodField()
-    avg_rating = serializers.SerializerMethodField()
+    avg_rating = serializers.FloatField()
     user = UserSerializer()
     worker_feedback = serializers.SerializerMethodField()
 
@@ -59,15 +60,16 @@ class WorkerSerializer(serializers.ModelSerializer):
         model = Worker
         fields = '__all__'
 
-    def get_avg_rating(self, obj):
-        feedback = self.get_worker_feedback(obj)
-        count = 0
-        sum = 0
-        for feed in feedback:
-            count = count + 1
-            sum = sum + feed['rate']
-        avg = sum/count
-        return avg
+    # def get_avg_rating(self, obj):
+    #     # feedback = self.get_worker_feedback(obj)
+    #     avg = Feedback.objects.filter(worker=obj).values('rate').aggregate(avg_rating=Avg('rate'))
+    #     # count = 0
+    #     # sum = 0
+    #     # for feed in feedback:
+    #     #     count = count + 1
+    #     #     sum = sum + feed['rate']
+    #     # avg = sum/count
+    #     return avg['avg_rating']
 
     def get_worker_feedback(self, obj):
         ser = GetFeedbackSerializer

@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from rest_framework import status, generics, filters, viewsets
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -228,6 +229,9 @@ class WorkerListAPI(generics.ListCreateAPIView):
     serializer_class = WorkerSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['$worker_price__category__title']
+
+    def get_queryset(self):
+        return Worker.objects.annotate(avg_rating=Avg('feedback__rate')).order_by('-avg_rating')
 
 
 class WorkerCatListAPI(generics.ListCreateAPIView):
