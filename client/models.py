@@ -174,7 +174,7 @@ class WorkerPrice(models.Model):
 class Worker(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=False)
     # categories = models.ManyToManyField('Categories', null=True)
-
+    response_num = models.IntegerField(null=True)
     objects = WorkerManager()
 
     def __str__(self):
