@@ -55,21 +55,16 @@ class WorkerSerializer(serializers.ModelSerializer):
     avg_rating = serializers.FloatField()
     user = UserSerializer()
     worker_feedback = serializers.SerializerMethodField()
+    response_num = serializers.SerializerMethodField()
 
     class Meta:
         model = Worker
         fields = '__all__'
 
-    # def get_avg_rating(self, obj):
-    #     # feedback = self.get_worker_feedback(obj)
-    #     avg = Feedback.objects.filter(worker=obj).values('rate').aggregate(avg_rating=Avg('rate'))
-    #     # count = 0
-    #     # sum = 0
-    #     # for feed in feedback:
-    #     #     count = count + 1
-    #     #     sum = sum + feed['rate']
-    #     # avg = sum/count
-    #     return avg['avg_rating']
+    def get_response_num(self, obj):
+        requests = RequestedService.objects.filter(worker=obj, status=True).count()
+        return requests
+
 
     def get_worker_feedback(self, obj):
         ser = GetFeedbackSerializer
