@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from datetime import datetime, timedelta
 from django.conf import settings
+from postgres_copy import CopyManager
 
 
 def upload_works(instance, filename):
@@ -267,3 +268,37 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.comment
+
+class Materials(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(verbose_name="Name", max_length=60, null=False)
+    objects = CopyManager()
+
+    def __str__(self):
+        return self.name
+
+class SubMaterials(models.Model):
+    id = models.AutoField(primary_key=True)
+    material = models.ForeignKey('Materials', on_delete=models.CASCADE)
+    title = models.CharField(verbose_name="Title", max_length=255, null=False)
+    price = models.CharField(verbose_name="Price", max_length=60, null=False)
+    image_url = models.CharField(verbose_name="Image url", max_length=255, null=True)
+    available_amount = models.IntegerField(verbose_name='Available amount', null=True)
+    description = models.CharField(verbose_name="Description", max_length=255, null=True)
+    objects = CopyManager()
+
+class SubMaterialsAndCharacteristics(models.Model):
+    id = models.AutoField(primary_key=True)
+    submaterial = models.ForeignKey('SubMaterials', on_delete=models.CASCADE)
+    characteristic = models.ForeignKey('Characteristics', on_delete=models.CASCADE)
+
+class Characteristics(models.Model):
+    id = models.AutoField(primary_key=True)
+    producer = models.CharField(verbose_name="Producer", max_length=100, null=True)
+    collection = models.CharField(verbose_name="Collection", max_length=100, null=True)
+    product_type = models.CharField(verbose_name="Product type", max_length=60, null=True)
+    length = models.IntegerField(verbose_name='Length', null=True)
+    width = models.IntegerField(verbose_name='Width', null=True)
+    thickness = models.IntegerField(verbose_name='Thickness', null=True)
+    fabric = models.CharField(verbose_name="Fabric", max_length=60, null=True)
+    colour = models.CharField(verbose_name="Colour", max_length=60, null=True)

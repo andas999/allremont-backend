@@ -6,6 +6,7 @@ urlpatterns = [
     path('client/add/', ClientRegistrationAPIView.as_view(), name='client_registration'),
     re_path(r'^worker/profile', WorkerProfileView.as_view()),
     re_path(r'^client/profile', ClientProfileView.as_view()),
+    path('submaterials/', SubmaterialsView.as_view()),
     path('users/', UserListAPI.as_view()),
     path('users/<int:pk>/', UserDetailAPI.as_view()),
     path('users/clients', ClientListAPI.as_view()),

@@ -32,5 +32,8 @@ urlpatterns = [
 urlpatterns += [
     path('admin/', admin.site.urls),
 ]
+urlpatterns += [
+    path('dashboard/', include('client.urls')),
+]
 urlpatterns += doc_urls
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

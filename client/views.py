@@ -1,6 +1,7 @@
 from django.db.models import Avg
 from rest_framework import status, generics, filters, viewsets
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.generics import RetrieveAPIView, ListAPIView, ListCreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,7 +10,7 @@ from .models import Client, Worker, User, RequestedService, WorkerPortfolio, Wor
 from .serializers import ClientRegistrationSerializer, \
     WorkerRegistrationSerializer, UserSerializer, WorkerSerializer, PortfolioSerializer, ServiceSerializer, \
     WorkerPhotoSerializer, PhotoSerializer, ResponseSerializer, ResponseRegSerializer, WorkerPriceSerializer, \
-    WorkerPriceCreationSerializer, FeedbackSerializer, GetFeedbackSerializer
+    WorkerPriceCreationSerializer, FeedbackSerializer, GetFeedbackSerializer, SubmaterialSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
@@ -322,3 +323,18 @@ class WorkerFeedbackAPI(generics.ListCreateAPIView):
     def list(self, request):
         serializer = GetFeedbackSerializer(self.get_queryset(), many=True)
         return Response(serializer.data)
+
+class SubmaterialsView(ListAPIView):
+    permission_classes = [AllowAny]
+
+    serializer_class = SubmaterialSerializer
+    model = serializer_class.Meta.model
+    search_fields = ['title']
+    ordering_fields = ('id', 'title', 'price')
+    filter_backends = (SearchFilter, OrderingFilter)
+    paginate_by = 100
+
+    def get_queryset(self):
+        queryset = self.model.objects.all()
+        return queryset
+

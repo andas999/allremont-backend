@@ -1,6 +1,6 @@
 from django.db.models import Avg
 from rest_framework import serializers
-from .models import User, Client, Worker, RequestedService, RequestPhoto, Response, WorkerPrice, Feedback
+from .models import User, Client, Worker, RequestedService, RequestPhoto, Response, WorkerPrice, Feedback, SubMaterials
 
 from .models import Categories, WorkerPortfolio, WorkerPortfolioPhoto
 
@@ -166,3 +166,9 @@ class GetFeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = '__all__'
+
+class SubmaterialSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubMaterials
+        fields = ['material', 'title', 'price', 'image_url', 'available_amount', ]
